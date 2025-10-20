@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avaliação de Risco Cardíaco</title>
+  <link rel="icon" href="favicon.ico" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 20px;
+      background-color: #f0f4f8;
+    }
+    h1 {
+      text-align: center;
+      color: #004080;
+    }
+    .logo {
+      display: block;
+      max-width: 180px;
+      margin: 0 auto 20px auto;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      background-color: #fefefe;
+      border-radius: 8px;
+    }
+    .risk-circle {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      margin-left: 8px;
+    }
+    .low { background-color: green; }
+    .medium { background-color: orange; }
+    .high { background-color: red; }
+    .links {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .links a {
+  display: inline-block;
+  background-color: #ff4b91;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.links a:hover {
+  background-color: #e13c7f;
+  transform: scale(1.05);
+}
+    .whatsapp-share {
+      display: block;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .whatsapp-share a {
+      display: inline-block;
+      background-color: #25D366;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .whatsapp-share a:hover {
+      background-color: #1ebe5d;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="logo.png" alt="Logo" class="logo">
+
+  <h1>Avaliação de Risco Cardíaco</h1>
+  <div class="container">
+    <label for="triglicerideos">Triglicerídeos:</label>
+    <input type="number" id="triglicerideos" placeholder="Ex: 150">
+
+    <label for="colesterol_total">Colesterol Total:</label>
+    <input type="number" id="colesterol_total" placeholder="Ex: 200">
+
+    <label for="ldl">LDL:</label>
+    <input type="number" id="ldl" placeholder="Ex: 120">
+
+    <label for="hdl">HDL:</label>
+    <input type="number" id="hdl" placeholder="Ex: 50">
+
+    <button onclick="calcularRisco()">Calcular Risco</button>
+
+    <div class="result" id="result"></div>
+    <div class="whatsapp-share" id="whatsapp-share"></div>
+    <div class="links" id="site-link" style="display: none;">
+  <!--    <a href="https://renataborbanutri.github.io/blackmaravilhosas/" target="_blank" rel="noopener noreferrer">Garanta sua vaga na black das Maravilhosas/a> -->
+    </div>
+  </div>
+
+  <script>
+    function calcularRisco() {
+      const triglicerideos = parseFloat(document.getElementById('triglicerideos').value);
+      const colesterol_total = parseFloat(document.getElementById('colesterol_total').value);
+      const ldl = parseFloat(document.getElementById('ldl').value);
+      const hdl = parseFloat(document.getElementById('hdl').value);
+
+      if (isNaN(triglicerideos) || isNaN(hdl) || isNaN(colesterol_total) || isNaN(ldl) || hdl === 0) {
+        document.getElementById('result').innerHTML = "<strong>Por favor, insira todos os valores corretamente!</strong>";
+        document.getElementById('whatsapp-share').innerHTML = "";
+        document.getElementById('site-link').style.display = "none";
+        return;
+      }
+
+      const ratioTrigHdl = (triglicerideos / hdl).toFixed(2);
+      const ratioColHdl = (colesterol_total / hdl).toFixed(2);
+      const ratioLdlHdl = (ldl / hdl).toFixed(2);
+
+
+      const riscoTrigHdl = getRiskLevel(ratioTrigHdl, 2.5, 5);
+      const riscoColHdl = getRiskLevel(ratioColHdl, 3.3, 5);
+      const riscoLdlHdl = getRiskLevel(ratioLdlHdl, 2.3, 3.5);
+
+      document.getElementById('result').innerHTML = `
+        <h3>Resultados:</h3>
+        <p><strong>Triglicerídeos / HDL:</strong> ${ratioTrigHdl} ${riscoTrigHdl}</p>
+        <p><strong>Colesterol Total / HDL:</strong> ${ratioColHdl} ${riscoColHdl}</p>
+        <p><strong>LDL / HDL:</strong> ${ratioLdlHdl} ${riscoLdlHdl}</p>
+        <p><strong>Não ignore os sinais que seu corpo está te dando. Fale comigo e entenda melhor seus resultados</strong></p>
+      `;
+
+const riscoTrigHdlLabel = getRiskLabel(ratioTrigHdl, 2.5, 5);
+const riscoColHdlLabel = getRiskLabel(ratioColHdl, 3.3, 5);
+const riscoLdlHdlLabel = getRiskLabel(ratioLdlHdl, 2.3, 3.5);
+function getRiskLabel(ratio, lowLimit, highLimit) {
+  if (ratio < lowLimit) {
+    return "Risco baixo";
+  } else if (ratio <= highLimit) {
+    return "Risco médio";
+  } else {
+    return "Risco alto";
+  }
+}
+
+
+      const textToShare = `Meus resultados de risco cardíaco:\n\nTriglicerídeos / HDL: ${ratioTrigHdl} (${riscoTrigHdlLabel})\nColesterol Total / HDL: ${ratioColHdl} (${riscoColHdlLabel})\nLDL / HDL: ${ratioLdlHdl} (${riscoLdlHdlLabel})\n\nGostaria de conversar sobre isso.`;
+      const encoded = encodeURIComponent(textToShare);
+      const shareLink = `https://wa.me/16153304647?text=${encoded}`;
+
+      document.getElementById('whatsapp-share').innerHTML = `<a href="${shareLink}" target="_blank">💬 Clique aqui e me chama no WhatsApp, vou te explicar tudo</a>`;
+      document.getElementById('site-link').style.display = "block";
+    }
+
+    function getRiskLevel(ratio, lowLimit, highLimit) {
+      if (ratio < lowLimit) {
+        return `<span> Risco cardíaco baixo 💚</span>`;
+      } else if (ratio <= highLimit) {
+        return `<span> Risco cardíaco médio 🟠</span>`;
+      } else {
+        return `<span> Risco cardíaco alto 🔴</span>`;
+      }
+    }
+
+  </script>
+
+</body>
+</html>
